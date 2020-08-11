@@ -13,7 +13,7 @@ repositories {
 
 group = "org.embulk"
 version = "0.1"
-description = "An Embulk plugin to do somethings"
+description = "An Embulk plugin to do pseudonomization"
 
 dependencies {
     compileOnly "org.embulk:embulk-api:0.10.3"
