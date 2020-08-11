@@ -1,0 +1,73 @@
+plugins {
+    id "java"
+    id "maven-publish"
+    id "org.embulk.embulk-plugins" version "0.4.2"
+    id "checkstyle"
+    id "jacoco"
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+group = "org.embulk"
+version = "0.1"
+description = "An Embulk plugin to do somethings"
+
+dependencies {
+    compileOnly "org.embulk:embulk-api:0.10.3"
+    compileOnly "org.embulk:embulk-core:0.10.3"
+
+    testCompile "junit:junit:4.13"
+    testCompile "org.embulk:embulk-api:0.10.5"
+    testCompile "org.embulk:embulk-core:0.10.5"
+    testCompile "org.embulk:embulk-core:0.10.5:tests"
+    testCompile "org.embulk:embulk-standards:0.10.5"
+    testCompile "org.embulk:embulk-junit4:0.10.5"
+
+    // TODO: Remove them.
+    // They are now required because the dependency libraries of them are behind sub ClassLoaders.
+    testCompile "org.embulk:embulk-deps-buffer:0.10.5"
+    testCompile "org.embulk:embulk-deps-config:0.10.5"
+    testCompile "org.embulk:embulk-deps-timestamp:0.10.5"
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    options.encoding = 'UTF-8'
+}
+
+embulkPlugin {
+    mainClass = "org.embulk.filter.pseudo.PseudoFilterPlugin"
+    category = "filter"
+    type = "pseudo"
+}
+
+gem {
+    from("LICENSE")  // Optional -- if you need other files in the gem.
+    authors = [ "Karri Niemelä" ]
+    email = [ "karri.niemela@beans.fi" ]
+    summary = "filter plugin for Embulk"
+    // "description" of the gem is copied from "description" of your Gradle project.
+    licenses = [ "Apache-2.0" ]
+}
+
+def checkstyleConfigDir = new File(rootDir, "/config/checkstyle")
+checkstyle {
+    configFile = new File(checkstyleConfigDir, "checkstyle.xml")
+    configProperties.checkstyleConfigDir = checkstyleConfigDir
+    toolVersion = '7.6.1'
+    ignoreFailures = true
+}
+task checkstyle(type: Checkstyle) {
+    classpath = sourceSets.main.output + sourceSets.test.output
+    source = sourceSets.main.allJava + sourceSets.test.allJava
+}
+check.dependsOn('checkstyle')
+
+jacocoTestReport {
+    reports {
+        html.enabled = true
+    }
+}
