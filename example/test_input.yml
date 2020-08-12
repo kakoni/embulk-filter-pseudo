@@ -1,0 +1,17 @@
+in:
+  type: file
+  path_prefix: example/data.csv
+  parser:
+    type: csv
+    charset: UTF-8
+    columns:
+      - {name: id, type: long}
+      - {name: ssn, type: string}
+filters:
+  - type: pseudo
+    secret_key: super secret
+    column_names: [ssn]
+
+out:
+  type: stdout
+  prints_column_names: true
