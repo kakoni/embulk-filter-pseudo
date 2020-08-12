@@ -8,7 +8,7 @@ This can be useful when you need to do pseudonymization for data.
 
 ## Configuration
 
-- **key**: description (integer, required)
+- **key**: secret key (string, required)
 - **column_names**: names of string columns to encrypt (array of string, required)
 
 ## Example
